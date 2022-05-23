@@ -30,15 +30,20 @@ class InputSearchCollect extends Component<MyProps | Readonly<MyState>> {
     addCollection = () => {
         try {
             let collections = this.props.collections
-            console.log(collections)
             let finded = false
-            this.props.collections.forEach(element => {
-                console.log(element[0], this.state.value)
-                if (element[0] == this.state.value) {finded = true}
-                else {
-                    console.log(element[0] , this.state.value)
-                }
-            });
+            if (collections) {
+                collections.forEach(element => {
+                    console.log(element[0], this.state.value)
+                    if (element[0] == this.state.value) {
+                        finded = true
+                    }
+                    else {
+                        console.log(element[0] , this.state.value)
+                    }
+                });
+            } else {
+                collections = []
+            }
                
             if (finded) {
                 alert('Deja register')
@@ -46,12 +51,14 @@ class InputSearchCollect extends Component<MyProps | Readonly<MyState>> {
                 collections.push([this.state.value, 0.01])
                 localStorage.set('collections', collections)
                 window.dispatchEvent(new Event("storage"));
+                
+                this.setState({value: ''}); 
                 // setTimeout(()=> {
                 //     window.location.reload();
                 // }, 500)
             }
         } catch (error) {
-            alert('error')
+            // alert('error')
         }
     }
     render() {

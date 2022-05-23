@@ -12,8 +12,10 @@ import axios from 'axios';
 import FetchCollectionInfo from '../components/collection/FetchCollectionInfo';
 
 
+let timer = null;
 
 class Sniper extends React.Component{
+  
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +27,8 @@ class Sniper extends React.Component{
             inputHide: true,
             error: true,
             runSniper: false,
-            errorSniper: false
+            errorSniper: false,
+            time: 0,
         };
         // this.inputRef = React.createRef();
 
@@ -38,12 +41,9 @@ class Sniper extends React.Component{
       }
       
     }
-    // componentDidUpdate() {
-    //   if (this.state.runSniper) {
-    //     findCollectionData('okay_bears')
-    //   }
-    // }
-    
+    componentWillUnmount() {
+      clearTimeout(timer);
+    }
     localStorageUpdated = () => {
       this.updateState(localStorage.get('collections'))
     }
@@ -76,7 +76,7 @@ class Sniper extends React.Component{
     setData = (data) => {
 
       if (data) {
-        console.log(data)
+        // console.log(data)
         this.setState({
           errorSniper: false
         })
@@ -89,23 +89,45 @@ class Sniper extends React.Component{
     }
     runSniper = () => {
       this.setState({
-        runSniper: true
+        runSniper: !this.state.runSniper
       })
+      if (!this.state.runSniper) {
+        timer = setInterval(() => {
+          this.setState({
+            time: this.state.time + 1
+          })
+        }, 1000);
+      } else {
+        this.setState({
+          time: 0
+        })
+        clearTimeout(timer);
+      }
     }
     generateKey = (pre) => {
         return `${pre}_${new Date().getTime()}`;
       }
 
     renderCollectionTarget = () => {
-        
+        console.log(this.state.collections)
         return (
             <div>
               <div className='list'>
                 
                   <InputSearchCollect collections={this.state.collections}/>
-                  <ListCollectionsTarget collections={this.state.collections}/>
-                  <FetchCollectionInfo symbol={'rotten_ville_sculptures'}/>
-                  {/* <button onClick={this.runSniper} className="modal-save-button">Run!</button> */}
+                  {this.state.runSniper ? 
+                    <div style={{width: '80%'}}>
+                      <p>timer: {this.state.time}</p>
+                      {this.state.collections.map((collection) => {
+                        return <FetchCollectionInfo symbol={collection[0]}/>
+                      })}
+                    </div>
+                    
+
+                    : <ListCollectionsTarget collections={this.state.collections}/>
+                  }
+                  <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
+                 
               </div>
             </div>
         )
