@@ -1,0 +1,123 @@
+h2 {
+    margin-bottom: 0;
+}
+h3 {
+    font-weight: bold;
+    font-size: calc(3px + 2vmin);
+    padding: 0;
+    margin: 0;
+}
+.alignCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.inputRow {
+    padding: 15px;
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: center;
+}
+.list {
+    height: 100%;
+    width: 80vw;
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.itemList {
+    padding: 15px;
+    justify-content: center;
+}
+.item {
+    display: flex;
+    width: 60vw;
+    flex-direction: row;
+    white-space: nowrap;
+    justify-content: center;
+    border-bottom: 1px solid lightblue;
+}
+.item>div>button{
+    /* display: ; */
+    width: 30px;
+}
+.itemExemple {
+    display: flex;
+    width: 60vw;
+    flex-direction: row;
+    white-space: nowrap;
+    justify-content: center;
+    border-bottom: 1px solid lightblue;
+}
+.itemExemple>div>button{
+    /* display: ; */
+    width: 30px;
+    background-color: transparent;
+    border: none;
+}
+.underItem {
+    display: flex;
+    width: 50vw;
+    flex-direction: row;
+    white-space: nowrap;
+    justify-content: center;
+    border-bottom: 1px solid lightblue;
+}
+.itemSearch {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
+.detail {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    background-color: aliceblue;
+    width: 90%;
+    text-align: center;
+}
+.detail>div{
+    width: 25%;
+}
+.detail>div:first-child{
+    width: 50%;
+    text-align: left;
+}
+.option {
+    display: flex;
+}
+.option>button:nth-child(1) {
+    background-color: rgba(255, 0, 0, 0.479);
+    color: bisque;
+    font-weight: bold;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    padding-top: -10;
+    border-radius: 0% 50% 50% 0%;
+    text-align: center;
+
+    margin: auto;
+    line-height: 4px; /* hauteur de ligne (identique) */
+    /* white-space: nowrap; */
+}
+.option>div:nth-child(2) {
+    background-color: rgba(0, 255, 0, 0.671);
+    color: bisque;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    padding: auto;
+    text-align: center;
+    margin: auto;
+    line-height: 15px; /* hauteur de ligne (identique) */
+    white-space: nowrap;
+}
+.collectionForm {
+    margin-bottom: 25px;
+}
