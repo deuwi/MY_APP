@@ -28,6 +28,7 @@ class Sniper extends React.Component < [], States>{
         super(props);
         this.state = {
             value: '',
+            valueMs: 100,
             valueLimit: 0.01,
             collections: [],
             collectionSniped: [],
@@ -60,6 +61,9 @@ class Sniper extends React.Component < [], States>{
     }
     handleChange = (event) => {    
       this.setState({value: event.target.value});  
+    }
+    handleChangeMs = (event) => {   
+      this.setState({valueMs: event.target.value});  
     }
     handleSubmit = (event) => {
       console.log('submit')
@@ -117,25 +121,27 @@ class Sniper extends React.Component < [], States>{
       }
 
     renderCollectionTarget = () => {
-        console.log(this.state.collections)
         return (
             <div>
               <div className='list'>
                 
                   <InputSearchCollect collections={this.state.collections}/>
+
                   {this.state.runSniper ? 
                     <div style={{width: '80%'}}>
                       <p>timer: {this.state.time}</p>
                       {this.state.collections.map((collection) => {
-                        return <FetchCollectionInfo symbol={collection[0]}/>
+                        return <FetchCollectionInfo generateKey={this.generateKey(collection[0])} collection={collection} msRefresh={this.state.valueMs}/>
                       })}
                     </div>
-                    
+                  : <ListCollectionsTarget collections={this.state.collections}/>}
 
-                    : <ListCollectionsTarget collections={this.state.collections} />
-                  }
-                  <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
-                 
+
+                  <div>
+                    {this.state.runSniper ? null : <input type={'number'} onChange={this.handleChangeMs} placeholder={'ex: 1000 ms'} title={'1000 recommanded'}></input>}
+                    <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
+                  </div>
+                  
               </div>
             </div>
         )

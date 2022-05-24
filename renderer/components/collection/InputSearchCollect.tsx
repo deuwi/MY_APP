@@ -75,7 +75,8 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
                     </label>
                     
                 <div>
-                    <FindCollection noStyle='true' symbol={this.state.value} submit={<input type="submit" value="Envoyer" />} />
+                    {this.state.value != '' ? <FindCollection noStyle='true' symbol={this.state.value} submit={<input type="submit" value="Envoyer" />} /> : null}
+                    
                 </div>
                 </form>
             
