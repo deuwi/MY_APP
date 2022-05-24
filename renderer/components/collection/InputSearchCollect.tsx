@@ -3,16 +3,16 @@ import localStorage from 'local-storage';
 import FindCollection from './FindCollection';
 
 type MyState = {
-    value: String;
+    value: string;
     collectionBool: Boolean;
-  };
-type MyProps = {
-
-    collections: Array<CollectionType>
-}
+};
 type CollectionType = any[]
-class InputSearchCollect extends Component<MyProps | Readonly<MyState>> {
-    constructor(props: MyProps) {
+type CustomValue = Array<CollectionType>;
+type Props = {
+    collections: CustomValue;
+}
+class InputSearchCollect extends Component <Props, Readonly<MyState>> {
+    constructor(props: Props) {
         super(props)
         this.state = {
             value: '',

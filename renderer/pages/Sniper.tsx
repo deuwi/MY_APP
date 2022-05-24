@@ -1,20 +1,28 @@
 import React, { Component, useCallback, useState  } from 'react';
-import Layout from './layout';
-import FindCollection from '../components/collection/FindCollection'
+import Layout from './Layout';
 import localStorage from 'local-storage';
 import InputSearchCollect from '../components/collection/InputSearchCollect';
-import modifLogo from '../public/images/icons8-crayon.gif'
 import ListCollectionsTarget from '../components/collection/ListCollectionsTarget';
-import Modal from '../components/collection/ModalUpdateCollection';
-import {useStream} from 'react-fetch-streams';
-import { app, BrowserWindow, ipcMain } from "electron";
-import axios from 'axios';
 import FetchCollectionInfo from '../components/collection/FetchCollectionInfo';
 
 
 let timer = null;
 
-class Sniper extends React.Component{
+type AnyType = any[]
+type States = {
+  value: string,
+  valueLimit: Number,
+  collections: Array<any[]>,
+  collectionSniped: Array<any[]>,
+  updatingLimit: Array<AnyType>,
+  inputHide: Boolean,
+  error: Boolean,
+  runSniper: Boolean,
+  errorSniper: Boolean,
+  time: number,
+}
+
+class Sniper extends React.Component < [], States>{
   
     constructor(props) {
         super(props);
@@ -124,7 +132,7 @@ class Sniper extends React.Component{
                     </div>
                     
 
-                    : <ListCollectionsTarget collections={this.state.collections}/>
+                    : <ListCollectionsTarget collections={this.state.collections} />
                   }
                   <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
                  

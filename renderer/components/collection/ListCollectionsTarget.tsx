@@ -15,23 +15,28 @@ type ArrayCollection = {
 type MyState = {
     valueLimit: number,
     collections: Array<ArrayCollection>,
-    updatingLimit: null,      
-    showModal: false,
-    valueLimitPrice: Number
+    updatingLimit: Array<String>,      
+    showModal: Boolean,
+    valueLimitPrice: number
 };
 type ObjectButton = {
     name: String,
     value: Number
 }
-class ListCollectionsTarget extends Component<MyState> {
+
+type MyProps = {
+    collections: Array<any[]>,
+}
+class ListCollectionsTarget extends Component<MyProps, MyState> {
     
-    constructor(props) {
-        super(props)
+    constructor(props: MyProps) {
+        super(props);
         this.state = {
-            valueLimit: null,
-            updatingLimit: null,      
+            valueLimit: undefined,
+            updatingLimit: null,
+            collections: [],  
             showModal: false,
-            valueLimitPrice: null
+            valueLimitPrice: undefined
         }
     }
 
@@ -153,7 +158,7 @@ class ListCollectionsTarget extends Component<MyState> {
             </button>
             </div>
           </div>
-            {this.props.collections?.length > 0 ? this.props.collections.map((item, i) => {
+            {this.props.collections != null ? this.props.collections.map((item, i) => {
                 return( 
                     <div key={this.generateKey(item)}>
                 
@@ -189,7 +194,7 @@ class ListCollectionsTarget extends Component<MyState> {
     render() {
         return (
             <div>
-                {this.state.updatingLimit != null ? <>
+                {this.state.updatingLimit?.length != 0 ? <>
                     <a className="modal-overlay" onClick={() => this.setState({updatingLimit: null})}>
                     </a>
                     <div className="modal-wrapper">
