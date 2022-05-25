@@ -14,8 +14,7 @@ type ArrayCollection = {
 }
 type MyState = {
     valueLimit: number,
-    collections: Array<ArrayCollection>,
-    updatingLimit: Array<String>,      
+    updatingLimit: object,      
     showModal: Boolean,
     valueLimitPrice: number
 };
@@ -34,7 +33,6 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         this.state = {
             valueLimit: undefined,
             updatingLimit: null,
-            collections: [],  
             showModal: false,
             valueLimitPrice: undefined
         }
@@ -90,7 +88,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
           }
         });
 
-        localStorage.set('collections', newCollectionTargeted)
+        window.localStorage.set('collections', newCollectionTargeted)
         window.dispatchEvent(new Event("storage"));
 
 
@@ -128,7 +126,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                 collectionUpdated.push(collection)
             })
             // this.setState({updatingLimit: [null, null]})
-            localStorage.set('collections', collectionUpdated)
+            window.localStorage.set('collections', collectionUpdated)
             this.setState({updatingLimit: null})
             console.log( collectionUpdated)
         }
@@ -158,13 +156,14 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             </button>
             </div>
           </div>
-            {this.props.collections != null ? this.props.collections.map((item, i) => {
+            {this.props.collections[0] != null ? this.props.collections.map((item, i) => {
+                console.log(this.props.collections)
                 return( 
                     <div key={this.generateKey(item)}>
                 
                         {/* <ModalUpdateCollection isShowing={this.state.updatingLimit != null} /> */}
                         <FindCollection 
-                            symbol={item[0]}  
+                            symbol={item[0]!}  
                             // price limit
                             priceLimit={<>                  
                                 {item[1]}
@@ -194,7 +193,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
     render() {
         return (
             <div>
-                {this.state.updatingLimit?.length != 0 ? <>
+                {this.state.updatingLimit != null ? <>
                     <a className="modal-overlay" onClick={() => this.setState({updatingLimit: null})}>
                     </a>
                     <div className="modal-wrapper">

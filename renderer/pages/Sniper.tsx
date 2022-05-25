@@ -8,13 +8,15 @@ import FetchCollectionInfo from '../components/collection/FetchCollectionInfo';
 
 let timer = null;
 
-type AnyType = any[]
+type CollectionType = any[]
+type CustomValue = Array<CollectionType>;
 type States = {
   value: string,
+  valueMs: Number,
   valueLimit: Number,
-  collections: Array<any[]>,
-  collectionSniped: Array<any[]>,
-  updatingLimit: Array<AnyType>,
+  collections: Array<any>,
+  collectionSniped: Array<string | undefined[]>,
+  updatingLimit: Array<any>,
   inputHide: Boolean,
   error: Boolean,
   runSniper: Boolean,
@@ -30,7 +32,7 @@ class Sniper extends React.Component < [], States>{
             value: '',
             valueMs: 100,
             valueLimit: 0.01,
-            collections: [],
+            collections: [null],
             collectionSniped: [],
             updatingLimit: [null, null],
             inputHide: true,
@@ -45,7 +47,8 @@ class Sniper extends React.Component < [], States>{
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-          this.setState({collections: localStorage.get('collections') != 'undefined' ? localStorage.get('collections') : []})
+          let collections =  JSON.parse(window.localStorage.getItem('collections'))
+          this.setState({collections:  collections})
           window.addEventListener('storage', this.localStorageUpdated)
       }
       
@@ -54,7 +57,7 @@ class Sniper extends React.Component < [], States>{
       clearTimeout(timer);
     }
     localStorageUpdated = () => {
-      this.updateState(localStorage.get('collections'))
+      this.updateState(window.localStorage.getItem('collections'))
     }
     updateState = (value) =>{
       this.setState({collections:value})
@@ -131,7 +134,7 @@ class Sniper extends React.Component < [], States>{
                     <div style={{width: '80%'}}>
                       <p>timer: {this.state.time}</p>
                       {this.state.collections.map((collection) => {
-                        return <FetchCollectionInfo generateKey={this.generateKey(collection[0])} collection={collection} msRefresh={this.state.valueMs}/>
+                        return <FetchCollectionInfo key={this.generateKey(collection[0])} collection={collection} msRefresh={this.state.valueMs}/>
                       })}
                     </div>
                   : <ListCollectionsTarget collections={this.state.collections}/>}

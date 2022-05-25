@@ -5,14 +5,14 @@ import * as solanaWeb3 from '@solana/web3.js';
 import bs58 from 'bs58';
 import localStorage from 'local-storage';
 import { Theme, makeStyles, createStyles } from '@material-ui/core';
-import Layout from './layout';
+import Layout from './Layout';
 // localStorage.set('wallets', [])
-class listingWallet extends Component {
+class ListingWallet extends Component {
   constructor(props) {
       super(props);
       this.state = {
         value: '',
-        wallets: localStorage.get("wallets") ? localStorage.get("wallets") : []
+        wallets: window.localStorage.get("wallets") ? window.localStorage.get("wallets") : []
       };
     }
   handleChange = (event) => {    
@@ -25,12 +25,12 @@ class listingWallet extends Component {
   }
   addWallet = () => {
     try {
-      let wallets = localStorage.get("wallets")
+      let wallets = window.localStorage.get("wallets")
       let wallet = solanaWeb3.Keypair.fromSecretKey(bs58.decode(this.state.value))
       console.log("wallet: ", wallet, typeof(wallet))
 
         wallets.push(wallet)
-      localStorage.set('wallets', wallets)
+        window.localStorage.set('wallets', wallets)
       window.location.reload(false);
       this.setState({
         wallets: wallets
@@ -47,8 +47,8 @@ class listingWallet extends Component {
         newWalletsList.push(wallet)
       }
     });
-    localStorage.set('wallets', newWalletsList)
-    window.location.reload(false);
+    window.localStorage.set('wallets', newWalletsList)
+    window.location.reload();
     this.setState({
       wallets: newWalletsList
     })
@@ -128,4 +128,4 @@ class listingWallet extends Component {
   
 };
 
-export default listingWallet;
+export default ListingWallet;

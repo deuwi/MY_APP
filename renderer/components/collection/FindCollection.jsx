@@ -18,7 +18,7 @@ const FindCollection = (props ) =>  {
   }, [setData]);
   
   if (props.symbol != 'undefined' ) {
-    useStream(`http://api-mainnet.magiceden.dev/v2/collections/${props.symbol}/stats`, {onNext});
+    useStream(`https://api-mainnet.magiceden.dev/v2/collections/${props.symbol}/stats`, {onNext});
   }
   const generateKey = (pre) => {
     return `${pre}_${new Date().getTime()}`;
