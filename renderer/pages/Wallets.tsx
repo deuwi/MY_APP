@@ -7,14 +7,28 @@ import localStorage from 'local-storage';
 import { Theme, makeStyles, createStyles } from '@material-ui/core';
 import Layout from './Layout';
 // localStorage.set('wallets', [])
-class ListingWallet extends Component {
-  constructor(props) {
+
+const { BrowserWindow } = require ("electron");
+
+type Mystate = {
+
+  value: string,
+  wallets: Array<any>
+}
+class ListingWallet extends Component <[]| Readonly<Mystate>> {
+  constructor(props: Mystate) {
       super(props);
       this.state = {
         value: '',
-        wallets: window.localStorage.get("wallets") ? window.localStorage.get("wallets") : []
+        wallets: []
       };
     }
+  componentDidMount(): void {
+    console.log(window.localStorage.getItem("wallets"))
+    this.setState({
+      wallets: []
+    })
+  }
   handleChange = (event) => {    
     this.setState({value: event.target.value});  
   }
@@ -25,13 +39,22 @@ class ListingWallet extends Component {
   }
   addWallet = () => {
     try {
-      let wallets = window.localStorage.get("wallets")
+      BrowserWindow.webContents
+      .executeJavaScript('({...localStorage});', true)
+      .then(localStorage => {
+        console.log(localStorage);
+      });
+      let wallets = window.localStorage.getItem("wallets") 
       let wallet = solanaWeb3.Keypair.fromSecretKey(bs58.decode(this.state.value))
-      console.log("wallet: ", wallet, typeof(wallet))
 
-        wallets.push(wallet)
-        window.localStorage.set('wallets', wallets)
-      window.location.reload(false);
+      console.log("wallet: ", wallet, typeof(wallet), wallets)
+      if (!wallets) {
+        wallets = []
+      }
+      wallets.push(JSON.stringify(wallet))
+      console.log(wallets)
+      window.localStorage.setItem('wallets', wallets)
+      // window.location.reload();
       this.setState({
         wallets: wallets
       })
@@ -41,13 +64,13 @@ class ListingWallet extends Component {
 
   }
   deletWallet = (walletDel) => {
-    let newWalletsList = []
+    let newWalletsList: Array<any> = []
     this.state.wallets.forEach(wallet => {
       if (walletDel != wallet) {
         newWalletsList.push(wallet)
       }
     });
-    window.localStorage.set('wallets', newWalletsList)
+    window.localStorage.setItem('wallets', newWalletsList)
     window.location.reload();
     this.setState({
       wallets: newWalletsList
@@ -67,6 +90,7 @@ class ListingWallet extends Component {
   `${address.slice(0, 4)}...${address.slice(-4)}`;
 
   bodyGen = () => {
+    console.log(this.state.wallets)
     return (
       <div >
             <div className='list'>
@@ -84,8 +108,8 @@ class ListingWallet extends Component {
                   </form>
                 </div>
                 <div className={'itemList'}>
-                {this.state.wallets.length > 0 
-                  ? this.state.wallets.map((wallet) => {
+                {this.state.wallets.length > 0
+                  ? this.state.wallets?.map((wallet) => {
                       return (
                           
                           <div className={'item'} key={this.getPublickey(wallet).toString()}>
@@ -115,7 +139,6 @@ class ListingWallet extends Component {
   }
 
   render () {
-    console.log(this.state.wallets.length, this.state.wallets)
     return (
       <React.Fragment>
         <Head>
