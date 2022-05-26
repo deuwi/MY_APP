@@ -11,6 +11,7 @@ let timer = null;
 type AnyType = any[]
 type States = {
   value: string,
+  valueMs: Number,
   valueLimit: Number,
   collections: Array<any[]>,
   collectionSniped: Array<any[]>,
@@ -45,12 +46,8 @@ class Sniper extends React.Component < [], States>{
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-<<<<<<< HEAD
           let collections =  window.localStorage.getItem('collections')
           this.setState({collections:  collections})
-=======
-          this.setState({collections: localStorage.get('collections') != 'undefined' ? localStorage.get('collections') : []})
->>>>>>> parent of dd8c817 (correction ts en cour)
           window.addEventListener('storage', this.localStorageUpdated)
       }
       

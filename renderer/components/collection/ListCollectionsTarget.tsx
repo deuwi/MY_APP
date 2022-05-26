@@ -90,7 +90,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
           }
         });
 
-        localStorage.set('collections', newCollectionTargeted)
+        localStorage.setItem('collections', newCollectionTargeted)
         window.dispatchEvent(new Event("storage"));
 
 
@@ -158,13 +158,9 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             </button>
             </div>
           </div>
-<<<<<<< HEAD
           {console.log(this.props.collections)}
             {this.props.collections[0] != null ? this.props.collections.map((item, i) => {
                 
-=======
-            {this.props.collections != null ? this.props.collections.map((item, i) => {
->>>>>>> parent of dd8c817 (correction ts en cour)
                 return( 
                     <div key={this.generateKey(item)}>
                 
