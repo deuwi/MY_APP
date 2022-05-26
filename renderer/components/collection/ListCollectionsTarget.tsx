@@ -90,7 +90,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
           }
         });
 
-        localStorage.setItem('collections', newCollectionTargeted)
+        localStorage.set('collections', newCollectionTargeted)
         window.dispatchEvent(new Event("storage"));
 
 
