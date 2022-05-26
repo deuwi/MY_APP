@@ -29,7 +29,7 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
     }
     addCollection = () => {
         try {
-            let collections: Array<any[]> = this.props.collections
+            let collections = this.props.collections
             let finded = false
             if (collections) {
                 collections.forEach(element => {
@@ -49,7 +49,7 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
                 alert('Deja register')
             }else {
                 collections.push([this.state.value, 0.01])
-                window.localStorage.setItem('collections', collections)
+                window.localStorage.set('collections', collections)
                 window.dispatchEvent(new Event("storage"));
                 
                 this.setState({value: ''}); 

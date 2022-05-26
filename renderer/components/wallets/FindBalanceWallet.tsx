@@ -1,24 +1,13 @@
-import React, { useEffect, useCallback, FunctionComponent } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { Theme, makeStyles, createStyles } from '@material-ui/core';
 import {useStream} from 'react-fetch-streams';
 
-type MyProps = {
-  publicKey: string
-}
-
-type Mystate = {
-  data: {
-    lamports?: number
-  }
-}
-
-const Wallet: FunctionComponent<MyProps | Mystate> = (props, lamports = []) =>  {
-  const [ data, setData ] = React.useState(lamports);
+const Wallet = (props) =>  {
+  const [ data, setData ] = React.useState([]);
 
   const onNext = useCallback(async res => {
     const data = await res.json();
-    console.log(data)
     setData(data);
   }, [setData]);
 
