@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import localStorage from 'local-storage';
+import localStorage from 'electron-json-storage';
 import FindCollection from './FindCollection';
 import ModalUpdateCollection from './ModalUpdateCollection';
 import { type } from 'os';
@@ -14,7 +14,6 @@ type ArrayCollection = {
 }
 type MyState = {
     valueLimit: number,
-    collections: Array<ArrayCollection>,
     updatingLimit: Array<String>,      
     showModal: Boolean,
     valueLimitPrice: number
@@ -34,7 +33,6 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         this.state = {
             valueLimit: undefined,
             updatingLimit: null,
-            collections: [],  
             showModal: false,
             valueLimitPrice: undefined
         }
@@ -42,20 +40,20 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
 
     
         
-    // componentDidMount() {
-    //     if (typeof window !== 'undefined') {
-    //         this.setState({collections: localStorage.get('collections') != undefined ? localStorage.get('collections') : []})
-    //         // console.log(localStorage.get('collections'))
-    //         window.addEventListener('storage', this.localStorageUpdated)
-    //     }
-    // }
+    componentDidMount() {
+        // if (typeof window !== 'undefined') {
+        //     this.setState({collections: localStorage.get('collections') != undefined ? localStorage.get('collections') : []})
+        //     // console.log(localStorage.get('collections'))
+        // }
+        window.addEventListener('storage', this.localStorageUpdated)
+    }
     
-    // localStorageUpdated = () => {
-    //     this.updateState(localStorage.get('collections'))
-    // }
-    // updateState(value){
-    //     this.setState({collections:value})
-    // }
+    updateState = (value) => {
+        this.setState({collections: value})
+    }
+    localStorageUpdated = () => {
+        this.updateState(localStorage.get('collections'))
+    }
     // componentDidMount(): void {
     //     this.setState({
     //         collections: localStorage.get('collections') != 'undefined' ? localStorage.get('collections') : [],
@@ -84,20 +82,15 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
     deleteCollectionTargeted = (item) => {
         let newCollectionTargeted = []
         this.props.collections.forEach(collection => {
-          if (item[0] != collection[0]) {
-              console.log(item[0], collection[0])
+          if (item['symbol'] != collection['symbol']) {
+              console.log(item['symbol'], collection['symbol'])
             newCollectionTargeted.push(collection)
           }
         });
+        localStorage.set('collections', newCollectionTargeted, () => {
+            window.dispatchEvent(new Event("storage"));
+        })
 
-        localStorage.set('collections', newCollectionTargeted)
-        window.dispatchEvent(new Event("storage"));
-
-
-        // window.location.reload();
-        // this.setState({
-        //     collections: newCollectionTargeted
-        // })
     }
     toggleLimitPriceSetting = (event: Object) => {
         let item = event
@@ -128,9 +121,11 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                 collectionUpdated.push(collection)
             })
             // this.setState({updatingLimit: [null, null]})
-            localStorage.set('collections', collectionUpdated)
-            this.setState({updatingLimit: null})
-            console.log( collectionUpdated)
+            localStorage.set('collections', collectionUpdated, () => {
+
+                this.setState({updatingLimit: null})
+                console.log( collectionUpdated)
+            })
         }
     }
     generateKey = (pre) => {
@@ -159,17 +154,17 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             </div>
           </div>
           {console.log(this.props.collections)}
-            {this.props.collections[0] != null ? this.props.collections.map((item, i) => {
-                
+            {this.props.collections != null ? this.props.collections?.map((item, i) => {
+                console.log(item)
                 return( 
-                    <div key={this.generateKey(item)}>
+                    <div key={this.generateKey(item['symbol'])}>
                 
                         {/* <ModalUpdateCollection isShowing={this.state.updatingLimit != null} /> */}
                         <FindCollection 
-                            symbol={item[0]}  
+                            symbol={item['symbol']}  
                             // price limit
                             priceLimit={<>                  
-                                {item[1]}
+                                {item['targetPrice']}
                             </>} 
                             button={
                                 <div>
@@ -181,9 +176,9 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                                 
                                 
                                 <button type='button' 
-                                        title='Delete' 
-                                        onClick={() => this.deleteCollectionTargeted(item)}>
-                                 <FontAwesomeIcon icon={['fas', 'delete-left']} size="xs" />
+                                    title='Delete' 
+                                    onClick={() => this.deleteCollectionTargeted(item)}>
+                                    <FontAwesomeIcon icon={['fas', 'delete-left']} size="xs" />
                                 </button>
                                 </div>}
                         />
@@ -194,16 +189,17 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         )
     }
     render() {
+        console.log(this.state.updatingLimit)
         return (
             <div>
-                {this.state.updatingLimit?.length != 0 ? <>
+                {this.state.updatingLimit != null ? <>
                     <a className="modal-overlay" onClick={() => this.setState({updatingLimit: null})}>
                     </a>
                     <div className="modal-wrapper">
                         <div className="modal">
                             
                         <div className="modal-header">
-                            <h2>{this.state.updatingLimit[0]}</h2>
+                            <h2>{this.state.updatingLimit['symbol']}</h2>
                             <div className="modal-body">Update Limit Price</div>
                             <button
                                 type="button"
@@ -213,7 +209,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                                 <input 
                                     type={"number"}  step="0.01"
                                     value={this.state.valueLimitPrice != null ? this.state.valueLimitPrice : null}
-                                    placeholder={this.state.updatingLimit[1]}
+                                    placeholder={this.state.updatingLimit['targetPrice']}
                                     onChange={this.setValueLimitPrice}
                                 />
                             {/* <span>&times;</span> */}

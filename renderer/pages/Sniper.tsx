@@ -1,9 +1,11 @@
 import React, { Component, useCallback, useState  } from 'react';
 import Layout from './Layout';
-import localStorage from 'local-storage';
+import localStorage from 'electron-json-storage';
 import InputSearchCollect from '../components/collection/InputSearchCollect';
 import ListCollectionsTarget from '../components/collection/ListCollectionsTarget';
 import FetchCollectionInfo from '../components/collection/FetchCollectionInfo';
+import os from 'os'
+localStorage.setDataPath(os.tmpdir())
 
 
 let timer = null;
@@ -13,7 +15,7 @@ type States = {
   value: string,
   valueMs: Number,
   valueLimit: Number,
-  collections: Array<any[]>,
+  collections: Array<Array<object>>,
   collectionSniped: Array<any[]>,
   updatingLimit: Array<AnyType>,
   inputHide: Boolean,
@@ -46,9 +48,10 @@ class Sniper extends React.Component < [], States>{
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-          let collections =  window.localStorage.getItem('collections')
-          this.setState({collections:  collections})
-          window.addEventListener('storage', this.localStorageUpdated)
+        
+        this.updateState(localStorage.getSync('collections'))
+          
+        window.addEventListener('storage', this.localStorageUpdated)
       }
       
     }
@@ -56,7 +59,7 @@ class Sniper extends React.Component < [], States>{
       clearTimeout(timer);
     }
     localStorageUpdated = () => {
-      this.updateState(localStorage.get('collections'))
+      this.updateState(localStorage.getSync('collections'))
     }
     updateState = (value) =>{
       this.setState({collections:value})

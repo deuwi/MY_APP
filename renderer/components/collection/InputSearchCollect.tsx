@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import localStorage from 'local-storage';
+import localStorage from 'electron-json-storage';
 import FindCollection from './FindCollection';
+import os from 'os'
+localStorage.setDataPath(os.tmpdir())
 
 type MyState = {
     value: string;
     collectionBool: Boolean;
-};
-type CollectionType = any[]
+}
+
+type CollectionType = {
+    symbol: string,
+    targetPrice: number
+}
+
 type CustomValue = Array<CollectionType>;
 type Props = {
     collections: CustomValue;
@@ -48,9 +55,10 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
             if (finded) {
                 alert('Deja register')
             }else {
-                collections.push([this.state.value, 0.01])
-                localStorage.set('collections', collections)
-                window.dispatchEvent(new Event("storage"));
+                collections.push({symbol: this.state.value,targetPrice: 0.01})
+                localStorage.set('collections', collections, () => {
+                    window.dispatchEvent(new Event("storage"));
+                })
                 
                 this.setState({value: ''}); 
                 // setTimeout(()=> {
