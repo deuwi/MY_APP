@@ -11,8 +11,10 @@ localStorage.setDataPath(os.tmpdir())
 let timer = null;
 
 type AnyType = any[]
-type States = {
-  value: string,
+interface IProps {
+}
+interface States {
+  value?: string,
   valueMs: Number,
   valueLimit: Number,
   collections: Array<Array<object>>,
@@ -25,11 +27,9 @@ type States = {
   time: number,
 }
 
-class Sniper extends React.Component < [], States>{
-  
-    constructor(props) {
-        super(props);
-        this.state = {
+class Sniper extends React.Component < IProps, States>{
+    
+        state = {
             value: '',
             valueMs: 100,
             valueLimit: 0.01,
@@ -44,52 +44,30 @@ class Sniper extends React.Component < [], States>{
         };
         // this.inputRef = React.createRef();
 
-    }
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-
+        
+        this.updateState(localStorage.getSync('collections'))
           
         window.addEventListener('storage', this.localStorageUpdated)
       }
       
     }
-    componentWillUnmount() {
-      clearTimeout(timer);
-    }
     localStorageUpdated = () => {
       this.updateState(localStorage.getSync('collections'))
     }
-    updateState = (value) =>{
+    updateState = (value: any) =>{
       this.setState({collections:value})
     }
-    handleChange = (event) => {    
+    handleChange = (event: any) => {    
       this.setState({value: event.target.value});  
     }
-    handleChangeMs = (event) => {   
+    handleChangeMs = (event: any) => {   
       this.setState({valueMs: event.target.value});  
     }
-    handleSubmit = (event) => {
-      console.log('submit')
-    //   this.addCollection()
-      event.preventDefault();
-    }
 
-
-    // buyItem = () => {
-    //   var data = []
-    //   let symbol = this.state.collections[0][0]
-    //   // console.log(config)
-    //   this.findCollectionData(symbol)
-
-    //   // const childWindow = window.open('', 'modal')
-    //   // var newDiv = document.createElement("div");
-    //   // var newContent = document.createTextNode('Hi there and greetings!');
-    //   // newDiv.appendChild(newContent);
-    //   // childWindow.document.body.appendChild(newDiv)
-
-    // }
-    setData = (data) => {
+    setData = (data: any) => {
 
       if (data) {
         // console.log(data)
@@ -135,7 +113,8 @@ class Sniper extends React.Component < [], States>{
                     <div style={{width: '80%'}}>
                       <p>timer: {this.state.time}</p>
                       {this.state.collections.map((collection) => {
-                        return <FetchCollectionInfo generateKey={this.generateKey(collection[0])} collection={collection} msRefresh={this.state.valueMs}/>
+                        console.log(collection)
+                        return <FetchCollectionInfo collection={collection} msRefresh={this.state.valueMs}/>
                       })}
                     </div>
                   : <ListCollectionsTarget collections={this.state.collections}/>}
@@ -152,6 +131,7 @@ class Sniper extends React.Component < [], States>{
     }
       // }
     render() {
+      return (<Layout body={this.renderCollectionTarget}/>)
     }
 }
   

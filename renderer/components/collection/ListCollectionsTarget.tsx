@@ -28,14 +28,11 @@ type MyProps = {
 }
 class ListCollectionsTarget extends Component<MyProps, MyState> {
     
-    constructor(props: MyProps) {
-        super(props);
-        this.state = {
-            valueLimit: undefined,
-            updatingLimit: null,
-            showModal: false,
-            valueLimitPrice: 0.01
-        }
+    state = {
+        valueLimit: null,
+        updatingLimit: null,
+        showModal: false,
+        valueLimitPrice: 0.01
     }
 
     
@@ -128,35 +125,33 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             </button>
             </div>
           </div>
-          {console.log(this.props.collections)}
-            {this.props.collections != null ? this.props.collections?.map((item, i) => {
+            {this.props.collections[0] != null ? this.props.collections?.map((item, i) => {
                 console.log(item)
                 return( 
                     <div key={this.generateKey(item['symbol'])}>
                 
                         {/* <ModalUpdateCollection isShowing={this.state.updatingLimit != null} /> */}
                         <FindCollection 
-                            symbol={item['symbol']}  
+                            symbol={item['symbol']}
                             // price limit
-                            priceLimit={<>                  
-                                {item['targetPrice']}
-                            </>} 
+                            priceLimit={item['targetPrice']}
                             button={
                                 <div>
-                                <button 
-                                    title='Update' 
-                                    onClick={() => this.toggleLimitPriceSetting(item)}>
+                                    <button
+                                        title='Update'
+                                        onClick={() => this.toggleLimitPriceSetting(item)}>
                                         <FontAwesomeIcon icon={['fas', 'pen-to-square']} />
-                                </button>
-                                
-                                
-                                <button type='button' 
-                                    title='Delete' 
-                                    onClick={() => this.deleteCollectionTargeted(item)}>
-                                    <FontAwesomeIcon icon={['fas', 'delete-left']} size="xs" />
-                                </button>
-                                </div>}
-                        />
+                                    </button>
+
+
+                                    <button type='button'
+                                        title='Delete'
+                                        onClick={() => this.deleteCollectionTargeted(item)}>
+                                        <FontAwesomeIcon icon={['fas', 'delete-left']} size="xs" />
+                                    </button>
+                                </div>} 
+                            noStyle={false} 
+                            submit={null}/>
                     </div>)  
             }): null}
             </>
@@ -166,8 +161,10 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
     render() {
         console.log(this.state.updatingLimit)
         return (
+            <React.Fragment  >
             <div>
-                {this.state.updatingLimit != null ? <>
+                {this.state.updatingLimit != null ? 
+                <>
                     <a className="modal-overlay" onClick={() => this.setState({updatingLimit: null})}>
                     </a>
                     <div className="modal-wrapper">
@@ -196,6 +193,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                 </> : null}
                 {this.renderList()}
             </div>
+            </React.Fragment  >
         )
     }
 }

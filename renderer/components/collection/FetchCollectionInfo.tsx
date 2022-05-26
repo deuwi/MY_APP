@@ -4,13 +4,21 @@ import {useStream} from 'react-fetch-streams';
 // prop need to contain 
   //limit of collection
   //wallet 
-const FetchCollectionInfo = (props) => {
-  const [ data, setData ] = React.useState([]);
+interface myProps {
+  msRefresh: number,
+  collection: object
+}
+const FetchCollectionInfo = (props: myProps) => {
+  const [ data, setData ] = React.useState<{
+    type: string,
+    price: number
+  }>();
   const [ error, setError ] = React.useState(false);
   const [ newData, setNewData ] = React.useState(false);
-  var oldData = []
+  var oldData:any = []
   const onNext = useCallback(async res => {
-    const dataNext = await res.json();
+    const dataNext:Array<any> = await res.json();
+    console.log(dataNext)
     if (dataNext[0].signature != oldData.signature) {
       console.log(dataNext[0].signature, oldData.signature)
       oldData = dataNext[0]
@@ -31,9 +39,12 @@ const FetchCollectionInfo = (props) => {
   if (props.msRefresh) {
     msRefresh = props.msRefresh
   }
-  setTimeout(() => {
-    fetch(`http://api-mainnet.magiceden.dev/v2/collections/${props.collection[0]}/activities?offset=0&limit=1`).then(onNext)
-  }, 1000)
+  if (props.collection['symbol']) {
+
+    setTimeout(() => {
+      fetch(`http://api-mainnet.magiceden.dev/v2/collections/${props.collection['symbol']}/activities?offset=0&limit=1`).then(onNext)
+    }, msRefresh)
+  }
   return (
     <div style={{
       backgroundColor: 'black',
@@ -44,11 +55,14 @@ const FetchCollectionInfo = (props) => {
       display: 'flex',
       flexDirection: 'row',
     }}>
-      <div style={{width: '33%'}}>{props.collection[0]}</div>
+      <div style={{width: '33%'}}>{props.collection['symbol']}</div>
       <div style={{width: '33%', textAlign: 'center'}}>{data?.type} == list</div>
       <div style={{width: '33%', textAlign: 'right', display:'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-        <div>{data?.price + ' <= ' + props.collection[1] }</div>
-        <div>{(data?.price <= props.collection[1] && data?.type === 'list' ? <span style={{color: 'green'}}>true</span> : <span style={{color: 'red'}}>false</span>)}</div>
+        <div>{data?.price + ' <= ' + props.collection['targetPrice'] }</div>
+        <div>{(data?.price <= props.collection['targetPrice'] && data?.type === 'list' ? 
+          <span style={{color: 'green'}}>true</span> : 
+          <span style={{color: 'red'}}>false</span>)}
+        </div>
         
       </div>
       {newData ? <div style={{width: '10%', display: 'flex', flexDirection: 'row-reverse', color: 'green', marginRight: '-100%'}}>{'New!'}</div>: null}

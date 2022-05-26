@@ -17,14 +17,12 @@ type CollectionType = {
 type Props = {
     collections: Array<Object>;
 }
-class InputSearchCollect extends Component <Props, Readonly<MyState>> {
-    constructor(props: Props) {
-        super(props)
-        this.state = {
-            value: '',
-            collectionBool: false
-        };
-    }
+class InputSearchCollect extends Component <Props, MyState> {
+    props: Props
+    state:MyState = {
+        value: '',
+        collectionBool: false
+    };
     handleChange = (event) => {    
         console.log(event.target.value)
         this.setState({value: event.target.value});  
@@ -70,6 +68,7 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
     }
     render() {
         return (
+            <React.Fragment  >
             <div className='collectionForm'>
                 <h2>Target Collection :</h2> 
                 <form className='inputRow' onSubmit={this.handleSubmit}>
@@ -82,12 +81,13 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
                     </label>
                     
                 <div>
-                    {this.state.value != '' ? <FindCollection noStyle='true' symbol={this.state.value} submit={<input type="submit" value="Envoyer" />} /> : null}
+                    {this.state.value != '' ? <FindCollection noStyle={true} symbol={this.state.value} submit={<input type="submit" value="Envoyer" />} priceLimit={''} button={undefined} /> : null}
                     
                 </div>
                 </form>
             
             </div>
+            </React.Fragment>
         );
     }
 }
