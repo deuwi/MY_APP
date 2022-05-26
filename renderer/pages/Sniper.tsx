@@ -47,7 +47,7 @@ class Sniper extends React.Component < [], States>{
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-          let collections =  JSON.parse(window.localStorage.getItem('collections'))
+          let collections =  window.localStorage.getItem('collections')
           this.setState({collections:  collections})
           window.addEventListener('storage', this.localStorageUpdated)
       }

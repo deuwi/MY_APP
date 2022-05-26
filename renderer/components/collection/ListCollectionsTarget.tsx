@@ -156,8 +156,9 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             </button>
             </div>
           </div>
+          {console.log(this.props.collections)}
             {this.props.collections[0] != null ? this.props.collections.map((item, i) => {
-                console.log(this.props.collections)
+                
                 return( 
                     <div key={this.generateKey(item)}>
                 
