@@ -2,7 +2,7 @@ import React from 'react';
 
 import Link from '../components/Link';
 
-const Layout = (props) => {
+const Layout = (props: {body: any}) => {
     return (
         <div>
         <header></header>

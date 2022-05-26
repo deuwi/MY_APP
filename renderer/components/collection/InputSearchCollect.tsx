@@ -14,9 +14,8 @@ type CollectionType = {
     targetPrice: number
 }
 
-type CustomValue = Array<CollectionType>;
 type Props = {
-    collections: CustomValue;
+    collections: Array<Object>;
 }
 class InputSearchCollect extends Component <Props, Readonly<MyState>> {
     constructor(props: Props) {

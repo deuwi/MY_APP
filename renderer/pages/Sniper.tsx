@@ -48,8 +48,7 @@ class Sniper extends React.Component < [], States>{
          
     componentDidMount() {
       if (typeof window !== 'undefined') {
-        
-        this.updateState(localStorage.getSync('collections'))
+
           
         window.addEventListener('storage', this.localStorageUpdated)
       }
@@ -153,7 +152,6 @@ class Sniper extends React.Component < [], States>{
     }
       // }
     render() {
-      return (<Layout body={this.renderCollectionTarget}/>)
     }
 }
   

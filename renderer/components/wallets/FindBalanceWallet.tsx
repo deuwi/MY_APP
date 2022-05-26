@@ -3,11 +3,12 @@ import Head from 'next/head';
 import { Theme, makeStyles, createStyles } from '@material-ui/core';
 import {useStream} from 'react-fetch-streams';
 
-const Wallet = (props) =>  {
-  const [ data, setData ] = React.useState([]);
+const Wallet = (props: { publicKey: string; }) =>  {
+  const [ data, setData ] = React.useState({lamports: undefined});
 
   const onNext = useCallback(async res => {
     const data = await res.json();
+    console.log(data)
     setData(data);
   }, [setData]);
 

@@ -14,7 +14,7 @@ type ArrayCollection = {
 }
 type MyState = {
     valueLimit: number,
-    updatingLimit: Array<String>,      
+    updatingLimit: any,      
     showModal: Boolean,
     valueLimitPrice: number
 };
@@ -34,7 +34,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             valueLimit: undefined,
             updatingLimit: null,
             showModal: false,
-            valueLimitPrice: undefined
+            valueLimitPrice: 0.01
         }
     }
 
@@ -45,34 +45,9 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         //     this.setState({collections: localStorage.get('collections') != undefined ? localStorage.get('collections') : []})
         //     // console.log(localStorage.get('collections'))
         // }
-        window.addEventListener('storage', this.localStorageUpdated)
+        // window.addEventListener('storage', this.localStorageUpdated)
     }
     
-    updateState = (value) => {
-        this.setState({collections: value})
-    }
-    localStorageUpdated = () => {
-        this.updateState(localStorage.get('collections'))
-    }
-    // componentDidMount(): void {
-    //     this.setState({
-    //         collections: localStorage.get('collections') != 'undefined' ? localStorage.get('collections') : [],
-    //     })
-    //     const onNext = useCallback(async res => {
-    //         const data = await res.json();
-            
-    //         if (data.floorPrice) {
-    //             setData(data);
-    //             setError(false)
-    //         }else {
-    //             setError(true)
-    //         }
-    //         }, [setData]);
-            
-    //         if (props.symbol != 'undefined') {
-    //             useStream(`http://api-mainnet.magiceden.dev/v2/collections/${props.symbol}/stats`, {onNext});
-    //         }
-    //     }
     updateValueLimit = (event) => {
         let item = event.target.value
         this.setState({
@@ -113,10 +88,10 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             let collectionUpdated = []
             let item = this.state.updatingLimit
             this.props.collections.forEach((collection) => {
-                console.log(item[0], '==', collection[0])
-                if (item[0] == collection[0]) {
+                console.log(item['symbol'], '==', collection['symbol'])
+                if (item['symbol'] == collection['symbol']) {
                     //change limit price
-                    collection[1] = this.state.valueLimitPrice
+                    collection['targetPrice'] = this.state.valueLimitPrice
                 }
                 collectionUpdated.push(collection)
             })

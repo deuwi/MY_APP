@@ -3,18 +3,27 @@ import Head from 'next/head';
 import FindBalanceWallet from '../components/wallets/FindBalanceWallet';
 import * as solanaWeb3 from '@solana/web3.js';
 import bs58 from 'bs58';
-import localStorage from 'local-storage';
+import localStorage from 'electron-json-storage';
 import { Theme, makeStyles, createStyles } from '@material-ui/core';
-import Layout from './layout';
+import Layout from './Layout';
+import os, { type } from 'os'
+localStorage.setDataPath(os.tmpdir())
 // localStorage.set('wallets', [])
-class listingWallet extends Component {
-  constructor(props) {
-      super(props);
-      this.state = {
-        value: '',
-        wallets: localStorage.get("wallets") ? localStorage.get("wallets") : []
-      };
-    }
+type Mystate  = {
+  value: Readonly<string>,
+  wallets: Array<any>
+}
+
+class listingWallet extends Component<[] | Mystate>  {
+  state: Mystate = {
+    value: '',
+    wallets: []
+  };
+  componentDidMount(): void {
+      this.setState({
+        wallets: localStorage.getSync("wallets")
+      })
+  }
   handleChange = (event) => {    
     this.setState({value: event.target.value});  
   }
@@ -25,15 +34,17 @@ class listingWallet extends Component {
   }
   addWallet = () => {
     try {
-      let wallets = localStorage.get("wallets")
-      let wallet = solanaWeb3.Keypair.fromSecretKey(bs58.decode(this.state.value))
-      console.log("wallet: ", wallet, typeof(wallet))
-
+      localStorage.get("wallets", (wallets) => {
+        let wallet = solanaWeb3.Keypair.fromSecretKey(bs58.decode(this.state.value))
+        console.log("wallet: ", wallet, typeof(wallet), wallets)
+        if (!wallets) wallets = []
         wallets.push(wallet)
-      localStorage.set('wallets', wallets)
-      window.location.reload(false);
-      this.setState({
-        wallets: wallets
+        localStorage.set('wallets', wallets, () => {
+          window.location.reload();
+          this.setState({
+            wallets
+          })
+        })
       })
     } catch (error) {
       alert('error')
@@ -47,10 +58,11 @@ class listingWallet extends Component {
         newWalletsList.push(wallet)
       }
     });
-    localStorage.set('wallets', newWalletsList)
-    window.location.reload(false);
-    this.setState({
-      wallets: newWalletsList
+    localStorage.set('wallets', newWalletsList, () => {
+      window.location.reload();
+      this.setState({
+        wallets: newWalletsList
+      })
     })
   }
   getPublickey = (walletSave) => {
@@ -115,7 +127,7 @@ class listingWallet extends Component {
   }
 
   render () {
-    console.log(this.state.wallets.length, this.state.wallets)
+    // console.log(this.state.wallets.length, this.state.wallets)
     return (
       <React.Fragment>
         <Head>
