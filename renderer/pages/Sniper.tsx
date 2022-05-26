@@ -1,6 +1,5 @@
 import React, { Component, useCallback, useState  } from 'react';
 import Layout from './Layout';
-import Head from 'next/head';
 import localStorage from 'electron-json-storage';
 import InputSearchCollect from '../components/collection/InputSearchCollect';
 import ListCollectionsTarget from '../components/collection/ListCollectionsTarget';
@@ -50,7 +49,6 @@ class Sniper extends React.Component < [], States>{
     componentDidMount() {
       if (typeof window !== 'undefined') {
 
-        this.localStorageUpdated()
           
         window.addEventListener('storage', this.localStorageUpdated)
       }
@@ -154,14 +152,6 @@ class Sniper extends React.Component < [], States>{
     }
       // }
     render() {
-      return (
-        <React.Fragment>
-          <Head>
-            <title>Home - Nextron (with-typescript-material-ui)</title>
-          </Head>
-          <Layout body={this.renderCollectionTarget}/>
-        </React.Fragment>
-      )
     }
 }
   
