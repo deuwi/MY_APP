@@ -25,14 +25,14 @@ const FetchCollectionInfo = (props) => {
   }, [setData])
 
   // if (props.symbol ) {
-  //   useStream(`https://api-mainnet.magiceden.dev/v2/collections/${props.symbol}/activities?offset=0&limit=2`, {onNext});
+  //   useStream(`http://api-mainnet.magiceden.dev/v2/collections/${props.symbol}/activities?offset=0&limit=2`, {onNext});
   // } 
   let msRefresh = 1000
   if (props.msRefresh) {
     msRefresh = props.msRefresh
   }
   setTimeout(() => {
-    fetch(`https://api-mainnet.magiceden.dev/v2/collections/${props.collection[0]}/activities?offset=0&limit=1`).then(onNext)
+    fetch(`http://api-mainnet.magiceden.dev/v2/collections/${props.collection[0]}/activities?offset=0&limit=1`).then(onNext)
   }, 1000)
   return (
     <div style={{

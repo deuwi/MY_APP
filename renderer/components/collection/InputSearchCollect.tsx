@@ -49,7 +49,7 @@ class InputSearchCollect extends Component <Props, Readonly<MyState>> {
                 alert('Deja register')
             }else {
                 collections.push([this.state.value, 0.01])
-                window.localStorage.set('collections', collections)
+                localStorage.set('collections', collections)
                 window.dispatchEvent(new Event("storage"));
                 
                 this.setState({value: ''}); 
