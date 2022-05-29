@@ -4,9 +4,10 @@ import FindBalanceWallet from '../components/wallets/FindBalanceWallet';
 import * as solanaWeb3 from '@solana/web3.js';
 import bs58 from 'bs58';
 import localStorage from 'electron-json-storage';
-import { Theme, makeStyles, createStyles } from '@material-ui/core';
-import Layout from './Layout';
+import { Theme, makeStyles, createStyles, Input } from '@material-ui/core';
+import Layout from './MyLayout';
 import os, { type } from 'os'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 localStorage.setDataPath(os.tmpdir())
 // localStorage.set('wallets', [])
 type Mystate  = {
@@ -14,44 +15,54 @@ type Mystate  = {
   wallets: Array<any>
 }
 
-class listingWallet extends Component<[] | Mystate>  {
+class listingWallet extends Component<{} | Mystate>  {
   state: Mystate = {
     value: '',
     wallets: []
   };
   componentDidMount(): void {
-      this.setState({
-        wallets: localStorage.getSync("wallets")
-      })
+    this.localStorageUpdated()
+    window.addEventListener('storageWallet', this.localStorageUpdated)
   }
-  handleChange = (event) => {    
+  
+  localStorageUpdated = () => {
+    this.setState({
+      wallets: localStorage.getSync("wallets")
+    })
+  }
+  handleChange = (event: { target: { value: any; }; }) => {    
     this.setState({value: event.target.value});  
   }
-  handleSubmit = (event) => {
+  handleSubmit = (event: { preventDefault: () => void; }) => {
     
     this.addWallet()
     event.preventDefault();
   }
   addWallet = () => {
     try {
-      localStorage.get("wallets", (wallets) => {
+        let wallet_key = {
+          key: null,
+          priority: null
+        }
         let wallet = solanaWeb3.Keypair.fromSecretKey(bs58.decode(this.state.value))
-        console.log("wallet: ", wallet, typeof(wallet), wallets)
-        if (!wallets) wallets = []
-        wallets.push(wallet)
+        // first add
+        let wallets = this.state.wallets
+        if (typeof(wallets)  == "undefined") {wallets = []; console.log('considtion')}
+        console.log("wallet: ", wallets)
+        wallet_key.key = wallet;
+        wallet_key.priority = false;
+        wallets.push(wallet_key)
+        console.log("wallet: ", wallets)
+        //update storage
         localStorage.set('wallets', wallets, () => {
-          window.location.reload();
-          this.setState({
-            wallets
-          })
+          window.dispatchEvent(new Event("storageWallet"));
         })
-      })
     } catch (error) {
       alert('error')
     }
 
   }
-  deletWallet = (walletDel) => {
+  deletWallet = (walletDel: any) => {
     let newWalletsList = []
     this.state.wallets.forEach(wallet => {
       if (walletDel != wallet) {
@@ -59,18 +70,29 @@ class listingWallet extends Component<[] | Mystate>  {
       }
     });
     localStorage.set('wallets', newWalletsList, () => {
-      window.location.reload();
-      this.setState({
-        wallets: newWalletsList
-      })
+      window.dispatchEvent(new Event("storageWallet"));
     })
   }
-  getPublickey = (walletSave) => {
+  getPublickey = (walletSave: { _keypair: { secretKey: { [s: string]: number; } | ArrayLike<number>; }; }) => {
     //  PUBLIC KEY
     const keypair = solanaWeb3.Keypair.fromSecretKey(
       Uint8Array.from(Object.values(walletSave._keypair.secretKey))
     );
     return new solanaWeb3.PublicKey(keypair.publicKey.toBase58())
+  }
+  setWalletPriority = (wallet) => {
+    let newWallets = this.state.wallets
+    newWallets.forEach((walletModif) => {
+      if (walletModif == wallet) {
+        walletModif.priority = true
+      } else {
+        walletModif.priority = false
+      }
+    })
+
+    localStorage.set('wallets', newWallets, () => {
+      window.dispatchEvent(new Event("storageWallet"));
+    })
   }
   generateKey = (pre) => {
     return `${pre}_${new Date().getTime()}`;
@@ -100,14 +122,30 @@ class listingWallet extends Component<[] | Mystate>  {
                   ? this.state.wallets.map((wallet) => {
                       return (
                           
-                          <div className={'item'} key={this.getPublickey(wallet).toString()}>
+                          <div className={'item'} key={this.getPublickey(wallet.key).toString()}>
                             <div className='detail'>
-                              <div>{this.displayAddress(this.getPublickey(wallet).toString())}</div>
-                              <FindBalanceWallet  publicKey={this.getPublickey(wallet).toString()}/>
+                              <div>{this.displayAddress(this.getPublickey(wallet.key).toString())}</div>
+                              <FindBalanceWallet  publicKey={this.getPublickey(wallet.key).toString()}/>
                             </div>
                             <div className='option'>
-                              <button title='Delete' onClick={() => this.deletWallet(wallet)}>
-                                x
+                              {!wallet.priority ? 
+                                <input 
+                                  type='checkbox' 
+                                  title='Priotity'
+                                  checked={false}
+                                  onChange={() => this.setWalletPriority(wallet)}/> 
+                                : <input 
+                                  type='checkbox' 
+                                  title='Priotity'
+                                  disabled
+                                  checked
+                                  onChange={() => this.setWalletPriority(wallet)}/> 
+                              }
+                              <button 
+                                className='deleteButton'
+                                title='Delete' 
+                                onClick={() => this.deletWallet(wallet)}>
+                                <FontAwesomeIcon icon={['fas', 'xmark']} />
                               </button>
 
                               {/* <div>I</div> */}
@@ -129,12 +167,7 @@ class listingWallet extends Component<[] | Mystate>  {
   render () {
     // console.log(this.state.wallets.length, this.state.wallets)
     return (
-      <React.Fragment>
-        <Head>
-          <title>Home - Nextron (with-typescript-material-ui)</title>
-        </Head>
-        <Layout body={this.bodyGen}/>
-      </React.Fragment>
+      this.bodyGen()
     );
   }
   

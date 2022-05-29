@@ -7,6 +7,8 @@ import type { AppProps } from 'next/app';
 import '../styles/listWallet.css';
 import '../styles/nav.css';
 import '../styles/layout.css';
+
+import '../styles/terminal.css';
 export default function(props: AppProps) {
   const { Component, pageProps } = props;
 

@@ -12,15 +12,35 @@ nav{
     color: #282c34;
     font-size: calc(10px + 2vmin);
 }
-nav>div {
+nav>button {
     min-width: '100%';
     height: 100%;
-    padding: auto;
-    display: flex;
-    flex-direction: column;
-    padding-top: 40%;
+    font-size: calc(10px + 2vmin);
+    font-weight: bolder;
+    /* padding: auto; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    text-align: center;
+    /* padding-top: 40%; */
 }
-nav>div:hover {
+nav>button:hover {
     border: 1px solid black;
     box-shadow: inset 0 0 10px #000000;
+    font-size:calc(11px + 2vmin);
 }
+.terminal {
+    font-family: 'Terminal';
+    background-color: 'black';
+    color: 'white';
+    padding: '5px';
+    width: '80%';
+    display: 'flex';
+    flex-direction: 'row';
+}
+@font-face {
+    font-family: 'Terminal';
+    src: url(../public/terminal-regular-2.ttf) format('truetype');
+    font-weight: bold;
+    /* other formats include: 'woff2', 'truetype, 'opentype',
+                              'embedded-opentype', and 'svg' */
+  }

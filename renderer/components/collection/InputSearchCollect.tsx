@@ -37,12 +37,12 @@ class InputSearchCollect extends Component <Props, MyState> {
             let finded = false
             if (collections) {
                 collections.forEach(element => {
-                    console.log(element[0], this.state.value)
-                    if (element[0] == this.state.value) {
+                    console.log(element['symbol'], this.state.value)
+                    if (element['symbol'] == this.state.value) {
                         finded = true
                     }
                     else {
-                        console.log(element[0] , this.state.value)
+                        console.log(element['symbol'] , this.state.value)
                     }
                 });
             } else {

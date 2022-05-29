@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
 function Home() {
   const classes = useStyles({});
   const [open, setOpen] = React.useState(false);
-  const handleClose = () => setOpen(false);
-  const handleClick = () => setOpen(true);
 
   return (
     <React.Fragment>
@@ -33,7 +31,7 @@ function Home() {
       </Head>
       <div className={classes.root}>
         <Typography gutterBottom>
-          <Link href="/Sniper">Go to the next page</Link>
+          <Link href="/MyLayout">Go to the next page</Link>
         </Typography>
       </div>
     </React.Fragment>

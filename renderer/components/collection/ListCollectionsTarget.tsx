@@ -34,8 +34,6 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         showModal: false,
         valueLimitPrice: 0.01
     }
-
-    
         
     componentDidMount() {
         // if (typeof window !== 'undefined') {
@@ -45,12 +43,6 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
         // window.addEventListener('storage', this.localStorageUpdated)
     }
     
-    updateValueLimit = (event) => {
-        let item = event.target.value
-        this.setState({
-            valueLimit: item
-        })
-    }
     deleteCollectionTargeted = (item) => {
         let newCollectionTargeted = []
         this.props.collections.forEach(collection => {
@@ -77,7 +69,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
     }
     setValueLimitPrice = (event) => {
         this.setState({
-            valueLimitPrice: event.target.value
+            valueLimitPrice: Number(event.target.value)
         })
     }
     saveLimitPrice = () => {
@@ -108,7 +100,7 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
             <>
             <div className='itemExemple'>
             {/* {Loader('big')} */}
-            <div  className='detail'>
+            <div  className='detailExemple'>
                 <div>Symbol</div>
                 <div>Limit</div>
                 <div>Floor</div>
@@ -144,10 +136,11 @@ class ListCollectionsTarget extends Component<MyProps, MyState> {
                                     </button>
 
 
-                                    <button type='button'
+                                    <button 
+                                        className='deleteButton'
                                         title='Delete'
                                         onClick={() => this.deleteCollectionTargeted(item)}>
-                                        <FontAwesomeIcon icon={['fas', 'delete-left']} size="xs" />
+                                        <FontAwesomeIcon icon={['fas', 'xmark']} />
                                     </button>
                                 </div>} 
                             noStyle={false} 

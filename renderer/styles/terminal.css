@@ -1,0 +1,17 @@
+
+.terminal {
+    font-family: 'Terminal';
+    background-color: 'black';
+    color: 'white';
+    padding: '5px';
+    width: '80%';
+    display: 'flex';
+    flex-direction: 'row';
+}
+@font-face {
+    font-family: 'Terminal';
+    src: url(../public/terminal-regular-2.ttf) format('truetype');
+    font-weight: bold;
+    /* other formats include: 'woff2', 'truetype, 'opentype',
+                              'embedded-opentype', and 'svg' */
+  }

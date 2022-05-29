@@ -1,5 +1,6 @@
 import React, { Component, useCallback, useState  } from 'react';
-import Layout from './Layout';
+import Head from 'next/head';
+import Layout from './MyLayout';
 import localStorage from 'electron-json-storage';
 import InputSearchCollect from '../components/collection/InputSearchCollect';
 import ListCollectionsTarget from '../components/collection/ListCollectionsTarget';
@@ -25,6 +26,7 @@ interface States {
   runSniper: Boolean,
   errorSniper: Boolean,
   time: number,
+  mode: string
 }
 
 class Sniper extends React.Component < IProps, States>{
@@ -41,6 +43,7 @@ class Sniper extends React.Component < IProps, States>{
             runSniper: false,
             errorSniper: false,
             time: 0,
+            mode: ''
         };
         // this.inputRef = React.createRef();
 
@@ -98,6 +101,14 @@ class Sniper extends React.Component < IProps, States>{
         clearTimeout(timer);
       }
     }
+
+    changeMode = (event) => {
+      console.log(event)
+      this.setState({
+        mode: event.target.value
+      })
+    } 
+
     generateKey = (pre) => {
         return `${pre}_${new Date().getTime()}`;
       }
@@ -107,8 +118,7 @@ class Sniper extends React.Component < IProps, States>{
             <div>
               <div className='list'>
                 
-                  <InputSearchCollect collections={this.state.collections}/>
-
+                  
                   {this.state.runSniper ? 
                     <div style={{width: '80%'}}>
                       <p>timer: {this.state.time}</p>
@@ -117,12 +127,29 @@ class Sniper extends React.Component < IProps, States>{
                         return <FetchCollectionInfo collection={collection} msRefresh={this.state.valueMs}/>
                       })}
                     </div>
-                  : <ListCollectionsTarget collections={this.state.collections}/>}
+                  : <>
+                    <InputSearchCollect collections={this.state.collections}/>
+                    
+                    <ListCollectionsTarget collections={this.state.collections}/>
+                  </>}
 
-
-                  <div>
-                    {this.state.runSniper ? null : <input type={'number'} onChange={this.handleChangeMs} placeholder={'ex: 1000 ms'} title={'1000 recommanded'}></input>}
-                    <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
+                  <div style={{padding: '10px'}}>
+                    {this.state.runSniper ? null : 
+                    <>
+                    <label>Wallet mode: </label>
+                      <select value={this.state.mode} onChange={this.changeMode}>
+                        <option value={''} disabled >Mode         </option>
+                        <option value={'multi'}   >Multi wallets</option>
+                        <option value={'priotity'}>Priority     </option>
+                      </select>
+                      {this.state.mode == '' ? 
+                        null : 
+                        <>
+                          <input type={'number'} onChange={this.handleChangeMs} placeholder={'ex: 1000 ms (null=default)'} title={'1000 recommanded (null=default)'}></input>                 
+                          <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
+                        </>
+                      }</>
+                    }
                   </div>
                   
               </div>
@@ -131,7 +158,14 @@ class Sniper extends React.Component < IProps, States>{
     }
       // }
     render() {
-      return (<Layout body={this.renderCollectionTarget}/>)
+      return (
+        <React.Fragment>
+          <Head>
+            <title>Home - Nextron (with-typescript-material-ui)</title>
+          </Head>
+          {this.renderCollectionTarget()}
+        </React.Fragment>
+    );
     }
 }
   
