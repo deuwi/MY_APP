@@ -12,7 +12,7 @@ localStorage.setDataPath(os.tmpdir())
 // localStorage.set('wallets', [])
 type Mystate  = {
   value: Readonly<string>,
-  wallets: Array<any>
+  wallets: Readonly<any>
 }
 
 class listingWallet extends Component<{} | Mystate>  {
@@ -22,6 +22,7 @@ class listingWallet extends Component<{} | Mystate>  {
   };
   componentDidMount(): void {
     this.localStorageUpdated()
+    
     window.addEventListener('storageWallet', this.localStorageUpdated)
   }
   
@@ -29,6 +30,7 @@ class listingWallet extends Component<{} | Mystate>  {
     this.setState({
       wallets: localStorage.getSync("wallets")
     })
+    
   }
   handleChange = (event: { target: { value: any; }; }) => {    
     this.setState({value: event.target.value});  
@@ -101,6 +103,7 @@ class listingWallet extends Component<{} | Mystate>  {
   `${address.slice(0, 4)}...${address.slice(-4)}`;
 
   bodyGen = () => {
+    console.log(localStorage.getSync("wallets"))
     return (
       <div >
             <div className='list'>

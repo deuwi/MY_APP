@@ -13,6 +13,8 @@ let timer = null;
 
 type AnyType = any[]
 interface IProps {
+  changePage: Function,
+  wallets: Readonly<any>
 }
 interface States {
   value?: string,
@@ -29,33 +31,27 @@ interface States {
   mode: string
 }
 
-class Sniper extends React.Component < IProps, States>{
-    
-        state = {
-            value: '',
-            valueMs: 100,
-            valueLimit: 0.01,
-            collections: [],
-            collectionSniped: [],
-            updatingLimit: [null, null],
-            inputHide: true,
-            error: true,
-            runSniper: false,
-            errorSniper: false,
-            time: 0,
-            mode: ''
-        };
+class Sniper extends React.Component < IProps , States>{
+    state = {
+        value: '',
+        valueMs: 100,
+        valueLimit: 0.01,
+        collections: [],
+        collectionSniped: [],
+        updatingLimit: [null, null],
+        inputHide: true,
+        error: true,
+        runSniper: false,
+        errorSniper: false,
+        time: 0,
+        mode: ''
+    };
         // this.inputRef = React.createRef();
-
-         
     componentDidMount() {
       if (typeof window !== 'undefined') {
-        
         this.updateState(localStorage.getSync('collections'))
-          
         window.addEventListener('storage', this.localStorageUpdated)
       }
-      
     }
     localStorageUpdated = () => {
       this.updateState(localStorage.getSync('collections'))
@@ -101,7 +97,34 @@ class Sniper extends React.Component < IProps, States>{
         clearTimeout(timer);
       }
     }
+    printWithPriority = () => {
+      let priority = null
+      // console.log(typeof(this.props.wallets))
+      this.props.wallets.forEach((collection) => {
+        collection.priority ? priority = collection : null
+      })
+      if (priority) {
+        return <div style={{width: '80%'}}>
+            <p>timer: {this.state.time}</p>
+            {this.state.collections.map((collection) => {
+              return <FetchCollectionInfo wallet={priority} collection={collection} msRefresh={this.state.valueMs}/>
+            })}
 
+            <button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>
+          </div>
+      } else {
+        alert('Set wallet prioritaire')
+        this.props.changePage('wallets')
+      }
+    }
+    printSniper = () => {
+      if (this.state.mode == 'priotity') {
+        return this.printWithPriority()
+      }else if (this.state.mode == 'multi') {
+        alert(<button onClick={this.runSniper} className="modal-save-button">{this.state.runSniper ? 'Stop' : 'Run !'}</button>)
+          
+      }
+    }
     changeMode = (event) => {
       console.log(event)
       this.setState({
@@ -120,13 +143,7 @@ class Sniper extends React.Component < IProps, States>{
                 
                   
                   {this.state.runSniper ? 
-                    <div style={{width: '80%'}}>
-                      <p>timer: {this.state.time}</p>
-                      {this.state.collections.map((collection) => {
-                        console.log(collection)
-                        return <FetchCollectionInfo collection={collection} msRefresh={this.state.valueMs}/>
-                      })}
-                    </div>
+                    this.printSniper()
                   : <>
                     <InputSearchCollect collections={this.state.collections}/>
                     

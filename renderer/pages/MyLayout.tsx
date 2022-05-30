@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import localStorage from 'electron-json-storage';
 
 import Link from '../components/Link';
 import Sniper from './Sniper';
@@ -14,7 +15,7 @@ const Layout = () => {
                     <button onClick={() => setPages('sniper')}><div>Sniper</div></button >
                 </nav>
                 {pages == "wallets" ? <Wallets/>  : null }
-                {pages == "sniper"  ? <Sniper/>   : null }
+                {pages == "sniper"  ? <Sniper wallets={localStorage.getSync("wallets")} changePage={setPages}/>   : null }
                 
                 {/* <props.body/> */}
             </div>

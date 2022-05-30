@@ -39,7 +39,6 @@ const FindCollection = (props: myProps ) =>  {
     return `${pre}_${new Date().getTime()}`;
   }
   return ( 
-    
     <React.Fragment  >
       
       {error || !data ? null : 
