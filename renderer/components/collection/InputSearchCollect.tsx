@@ -35,7 +35,7 @@ class InputSearchCollect extends Component <Props, MyState> {
         try {
             let collections = this.props.collections
             let finded = false
-            if (collections) {
+            if (collections.length ) {
                 collections.forEach(element => {
                     console.log(element['symbol'], this.state.value)
                     if (element['symbol'] == this.state.value) {
@@ -48,12 +48,12 @@ class InputSearchCollect extends Component <Props, MyState> {
             } else {
                 collections = []
             }
-               
             if (finded) {
                 alert('Deja register')
             }else {
                 collections.push({symbol: this.state.value,targetPrice: 0.01})
-                localStorage.set('collections', collections, () => {
+                localStorage.set('collections', collections, (err) => {
+                    
                     window.dispatchEvent(new Event("storage"));
                 })
                 
